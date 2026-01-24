@@ -1,4 +1,6 @@
 import pygame
+from script import load_image
+player_image = load_image('assets/images/player')
 stop_image = pygame.image.load('assets/images/blocks/stop.png').convert_alpha()
 
 enemy1_image = pygame.image.load('assets/images/enemy/1/1.png').convert_alpha()

@@ -48,15 +48,17 @@ def lvlGame():
     coin_group.draw(window)
 
     step = 0
-    box_group.update(step,player_group,player,stopenemy_group)
+
     ground_group.update(step,player_group,player,stopenemy_group)
     sand_group.update(step,player_group,player,stopenemy_group)
     water_group.update(step,player_group,player,stopenemy_group)
-    portal_group.update(step,player_group,player)
+    portal_group.update(step,player_group,player,stopenemy_group)
+    box_group.update(step,player_group,player,stopenemy_group)
     stopenemy_group.update(step,player_group,player,stopenemy_group)
-    coin_group.update(step,player_group,player)
+    coin_group.update(step,player_group,player,stopenemy_group)
     enemy_group.update(step,player_group,player,stopenemy_group)
-    player_group.update(scroll_group,player_image)
+    player_group.update(player_image,scroll_group,player_group,player,stopenemy_group)
+
 
 
     pygame.display.update()
@@ -99,18 +101,23 @@ def drawMap (mapFile):
             elif game_map[i][j] == '6' :
                 enemy1 = Enemy(enemy1_image,pos)
                 enemy_group.add(enemy1)
+                scroll_group.add(enemy1)
             elif game_map[i][j] == '7' :
                 enemy2 = Enemy(enemy2_image, pos)
                 enemy_group.add(enemy2)
+                scroll_group.add(enemy2)
             elif game_map[i][j] == '8':
                 enemy3 = Enemy(enemy3_image,pos)
                 enemy_group.add(enemy3)
+                scroll_group.add(enemy3)
             elif game_map[i][j] == '9':
                 portal = Portal(portal_image, pos)
                 portal_group.add(portal)
+                scroll_group.add(portal)
             elif game_map[i][j] == '-1':
                 coin = Coin(coin_image,pos)
                 coin_group.add(coin)
+                scroll_group.add(coin)
 
 
 
