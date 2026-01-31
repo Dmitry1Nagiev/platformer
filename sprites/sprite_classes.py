@@ -17,24 +17,18 @@ class Coin(pygame.sprite.Sprite):
     def __init__(self,image, pos):
         super().__init__()
         self.image = image
+
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
     def update(self,step,player_group,player,stopenemy_group):
+        global schet
         self.rect.x += step
         if pygame.sprite.spritecollide(self, player_group, False):
-            if abs(self.rect.top - player.rect.bottom) < 15:
-                player.rect.bottom = self.rect.top - 5
-                player.on_ground = True
-            if abs(self.rect.bottom - player.rect.top) < 15:
-                player.rect.top = self.rect.bottom + 5
-                player.velocity_y = 0
-            if abs(self.rect.left - player.rect.right) < 15 \
-                    and abs(self.rect.centery - player.rect.centery) < 50:
-                player.rect.right = self.rect.left
-            if abs(self.rect.right - player.rect.left) < 15 \
-                    and abs(self.rect.centery - player.rect.centery) < 50:
-                player.rect.left = self.rect.right
+            self.kill()
+            #schet += 1
+
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self,image, pos):
         super().__init__()
@@ -44,14 +38,34 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y = pos[1]
         self.speed = 1
         self.dir= 1
-    def update(self,step,player_group,player,stopenemy_group):
+        self.frame = 0
+        self.timer_anime = 0
+        self.anime = False
+
+    def animation(self,enemy_image,FPS):
+        if self.anime:
+            self.timer_anime += 1
+            if self.timer_anime / FPS > 0.1:
+                if self.frame ==len(enemy_image) - 1:
+                    self.frame = 0
+                else:
+                    self.frame += 1
+                self.timer_anime = 0
+
+    def update(self,step,player_group,player,stopenemy_group,enemy_image,FPS):
+        self.animation(enemy_image,FPS)
         self.rect.x += step
         if self.dir == 1:
+            self.anime = True
+            self.image = enemy_image[self.frame]
             self.rect.x += self.speed
         elif self.dir == -1:
             self.rect.x -= self.speed
+            self.image = pygame.transform.flip(enemy_image[self.frame], True, False)
         if pygame.sprite.spritecollide(self,stopenemy_group,False):
+            self.image = enemy_image[self.frame]
             self.dir *= -1
+
 
 
 
@@ -181,7 +195,7 @@ class Player(pygame.sprite.Sprite):
         self.frame = 0
         self.timer_anime = 0
         self.anime = False
-    def animation(self,player_image):
+    def animation(self,player_image,FPS):
         if self.anime:
             self.timer_anime += 1
             if self.timer_anime / FPS > 0.1:
@@ -192,28 +206,29 @@ class Player(pygame.sprite.Sprite):
                 self.timer_anime = 0
 
 
-    def update(self,player_image,scroll_group,player_group,player,stopenemy_group):
+    def update(self,player_image,scroll_group,player_group,player,stopenemy_group,FPS):
 
-        self.animation(player_image )
-
+        self.animation(player_image,FPS)
         key= pygame.key.get_pressed()
         if key[pygame.K_d]:
-            #self.image = player_image[self.frame]
             self.anime = True
+            self.image = player_image[self.frame]
             self.rect.x += self.speed
             if self.rect.right > 750:
                 self.rect.right= 750
                 scroll_group.update(-self.speed,player_group,player,stopenemy_group)
 
 
-        if key[pygame.K_a]:
-
-            self.image= pygame.transform.flip(player_image[self.frame], True, False)
+        elif key[pygame.K_a]:
             self.anime = True
             self.rect.x -= self.speed
+            self.image = pygame.transform.flip(player_image[self.frame], True, False)
+
             if self.rect.left < 250:
                 self.rect.left= 250
                 scroll_group.update(self.speed,player_group,player,stopenemy_group)
+        else:
+            self.anime=False
 
         if key[pygame.K_SPACE] and self.on_ground:
             self.velocity_y = -17
@@ -222,5 +237,8 @@ class Player(pygame.sprite.Sprite):
         self.velocity_y += 1
         if self.velocity_y > 10:
             self.velocity_y = 10
-        self.anime = False
+        # self.anime = False
+
+        #if key[pygame.K_d] and key[pygame.K_a] != True :
+            #self.anime = False
 

@@ -28,7 +28,7 @@ def restart():
     coin_group = pygame.sprite.Group()
     enemy_group = pygame.sprite.Group()
     stopenemy_group = pygame.sprite.Group()
-    player = Player(player_image, (100, 560))
+    player = Player(player_image[0], (100, 560))
     player_group.add(player)
 
 
@@ -56,8 +56,8 @@ def lvlGame():
     box_group.update(step,player_group,player,stopenemy_group)
     stopenemy_group.update(step,player_group,player,stopenemy_group)
     coin_group.update(step,player_group,player,stopenemy_group)
-    enemy_group.update(step,player_group,player,stopenemy_group)
-    player_group.update(player_image,scroll_group,player_group,player,stopenemy_group)
+    enemy_group.update(step,player_group,player,stopenemy_group,enemy_image,FPS)
+    player_group.update(player_image,scroll_group,player_group,player,stopenemy_group,FPS)
 
 
 
@@ -99,15 +99,15 @@ def drawMap (mapFile):
                 stopenemy_group.add(stopenemy)
                 scroll_group.add(stopenemy)
             elif game_map[i][j] == '6' :
-                enemy1 = Enemy(enemy1_image,pos)
+                enemy1 = Enemy(enemy_image[0],pos)
                 enemy_group.add(enemy1)
                 scroll_group.add(enemy1)
             elif game_map[i][j] == '7' :
-                enemy2 = Enemy(enemy2_image, pos)
+                enemy2 = Enemy(enemy_image[1], pos)
                 enemy_group.add(enemy2)
                 scroll_group.add(enemy2)
             elif game_map[i][j] == '8':
-                enemy3 = Enemy(enemy3_image,pos)
+                enemy3 = Enemy(enemy_image[2],pos)
                 enemy_group.add(enemy3)
                 scroll_group.add(enemy3)
             elif game_map[i][j] == '9':
@@ -121,7 +121,7 @@ def drawMap (mapFile):
 
 
 
-
+schet = 0
 
 
 restart()
