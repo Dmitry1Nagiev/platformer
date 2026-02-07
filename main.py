@@ -49,15 +49,15 @@ def lvlGame():
 
     step = 0
 
-    ground_group.update(step,player_group,player,stopenemy_group)
-    sand_group.update(step,player_group,player,stopenemy_group)
-    water_group.update(step,player_group,player,stopenemy_group)
-    portal_group.update(step,player_group,player,stopenemy_group)
-    box_group.update(step,player_group,player,stopenemy_group)
-    stopenemy_group.update(step,player_group,player,stopenemy_group)
-    coin_group.update(step,player_group,player,stopenemy_group)
-    enemy_group.update(step,player_group,player,stopenemy_group,enemy_image,FPS)
-    player_group.update(player_image,scroll_group,player_group,player,stopenemy_group,FPS)
+    ground_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+    sand_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+    water_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+    portal_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+    box_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+    stopenemy_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+    coin_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+    enemy_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+    player_group.update(player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
 
 
 
@@ -99,19 +99,19 @@ def drawMap (mapFile):
                 stopenemy_group.add(stopenemy)
                 scroll_group.add(stopenemy)
             elif game_map[i][j] == '6' :
-                enemy1 = Enemy(enemy_image[0],pos)
+                enemy1 = Enemy(enemy_image1,pos)
                 enemy_group.add(enemy1)
                 scroll_group.add(enemy1)
             elif game_map[i][j] == '7' :
-                enemy2 = Enemy(enemy_image[1], pos)
+                enemy2 = Enemy(enemy_image2, pos)
                 enemy_group.add(enemy2)
                 scroll_group.add(enemy2)
             elif game_map[i][j] == '8':
-                enemy3 = Enemy(enemy_image[2],pos)
+                enemy3 = Enemy(enemy_image3,pos)
                 enemy_group.add(enemy3)
                 scroll_group.add(enemy3)
             elif game_map[i][j] == '9':
-                portal = Portal(portal_image, pos)
+                portal = Portal(portal_image[0], pos)
                 portal_group.add(portal)
                 scroll_group.add(portal)
             elif game_map[i][j] == '-1':
