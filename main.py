@@ -1,6 +1,9 @@
 import pygame
 import sys
 import random
+
+import pygwidgets
+from pygwidgets import *
 from sprites.sprite_classes import *
 
 
@@ -9,15 +12,28 @@ GREY = (210,210,210)
 WIDTH = 1200
 HEIGHT = 800
 FPS = 60
+
+HP_BAR_WIDTH = 300
+HP_BAR_HEIGHT = 30
+HP_BAR_X = 200
+HP_BAR_Y = 20
+
+
+
+
 pygame.init()
 
 window = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption('Platformer')
 clock = pygame.time.Clock()
 from load import *
+hp = 100
+hp_text = pygwidgets.DisplayText(window, (200,20), 'HP: 100',
+                                         fontSize = 40, textColor = (0,0,0))
 
 def restart():
-    global box_group, player, ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group
+    global box_group, player, ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text
+    stopenemy_group = pygame.sprite.Group()
     scroll_group= pygame.sprite.Group()
     box_group = pygame.sprite.Group()
     ground_group = pygame.sprite.Group()
@@ -27,26 +43,36 @@ def restart():
     portal_group = pygame.sprite.Group()
     coin_group = pygame.sprite.Group()
     enemy_group = pygame.sprite.Group()
-    stopenemy_group = pygame.sprite.Group()
+
     player = Player(player_image[0], (100, 560))
     player_group.add(player)
+    hp = 100
+    #hp_text = pygwidgets.DisplayText(window, (200, 20), 'HP: 100',
+                                     #fontSize=40, textColor=(0, 0, 0))
+
 
 
 
 
 def lvlGame():
-    global box_group, player,ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group
-
+    global box_group, player,ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text
+    stopenemy_group.draw(window)
     box_group.draw(window)
     ground_group.draw(window)
     sand_group.draw(window)
     water_group.draw(window)
     player_group.draw(window)
-    stopenemy_group.draw(window)
+
     portal_group.draw(window)
     enemy_group.draw(window)
     coin_group.draw(window)
+    coin_text = pygwidgets.DisplayText(window, (300, 300), 'Coins: 0',
+                                       fontSize=50, textColor=(255, 255, 255))
 
+
+
+
+    shet = 0
     step = 0
 
     ground_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
@@ -61,6 +87,60 @@ def lvlGame():
 
 
 
+    portal_dmg = pygame.sprite.spritecollide(player,portal_group,False)
+    hit_coin = pygame.sprite.spritecollide(player, coin_group, False)
+    hit_enemies = pygame.sprite.spritecollide(player,enemy_group,False)
+    hit_water = pygame.sprite.spritecollide(player,water_group,False)
+
+
+    for portal in portal_dmg:
+        if portal_dmg:
+            drawMap('game_lvl/level3.txt')
+
+
+    for coin in hit_coin:
+        if hit_coin:
+            coin.kill()
+            shet += 1
+            coin_text.setValue(f'Coins: {shet}')
+
+    for water in hit_water:
+        if hit_water:
+            player.kill()
+            restart()
+            drawMap('game_lvl/level2.txt')
+
+
+    for enemy in hit_enemies:
+        if player.velocity_y > 0 and \
+            player.rect.bottom - enemy.rect.top < 20:
+            player.velocity_y -= 30
+            enemy.kill()
+        else:
+            if not player.invulnerable:
+                hp -= 10
+                player.invulnerable = True
+                player.velocity_y -= 20
+                player.rect.x -= 10
+                #hp_text.setValue(f'HP: {hp}')
+            if hp <= 0:
+                player.kill()
+                restart()
+                drawMap('game_lvl/level2.txt')
+                return
+    pygame.draw.rect(window, (150, 150, 150), (HP_BAR_X, HP_BAR_Y, HP_BAR_WIDTH, HP_BAR_HEIGHT))
+
+    current_width = (hp / 100) * HP_BAR_WIDTH
+
+    pygame.draw.rect(window, (0, 200, 0),
+                     (HP_BAR_X, HP_BAR_Y, current_width, HP_BAR_HEIGHT))
+    pygame.draw.rect(window, (0, 0, 0),
+                     (HP_BAR_X, HP_BAR_Y, HP_BAR_WIDTH, HP_BAR_HEIGHT), 2)
+
+
+
+    for enemy in enemy_group:
+        enemy.move(FPS, stopenemy_group, enemy_image1, enemy_image2, enemy_image3)
     pygame.display.update()
 
 
