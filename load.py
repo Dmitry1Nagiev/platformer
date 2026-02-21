@@ -7,7 +7,8 @@ enemy_image1 = load_image('assets/images/enemy/1')
 enemy_image2 = load_image('assets/images/enemy/2')
 enemy_image3 = load_image('assets/images/enemy/3')
 #pygame.image.load('assets/images/enemy/2/1.png').convert_alpha(),
-
+#npc_image = load_image('assets/images/NPC')
+npc_image = pygame.image.load('assets/images/NPC/player1.png')
 #pygame.image.load('assets/images/enemy/3/1.png').convert_alpha()]
 portal_image = load_image('assets/images/portal')
 

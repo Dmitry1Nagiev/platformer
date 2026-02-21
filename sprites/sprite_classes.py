@@ -25,7 +25,7 @@ class Portal(pygame.sprite.Sprite):
                 else:
                     self.frame += 1
                 self.timer_anime = 0
-    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3):
+    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
         self.anime = True
         self.image = portal_image[self.frame]
         self.rect.x += step
@@ -39,7 +39,7 @@ class Coin(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3):
+    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
         global schet
         self.rect.x += step
 
@@ -70,7 +70,7 @@ class Enemy(pygame.sprite.Sprite):
                     self.frame += 1
                 self.timer_anime = 0
 
-    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3):
+    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
         self.rect.x += step
 
 
@@ -98,7 +98,7 @@ class StopEnemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3):
+    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
         self.rect.x += step
 
 
@@ -110,7 +110,7 @@ class Box(pygame.sprite.Sprite):
         self.rect.x = pos[0]
         self.rect.y = pos[1]
 
-    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3):
+    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
         self.rect.x += step
         if pygame.sprite.spritecollide(self,player_group,False):
             if abs(self.rect.top - player.rect.bottom) < 15:
@@ -132,7 +132,7 @@ class Ground(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3):
+    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
         self.rect.x += step
         if pygame.sprite.spritecollide(self, player_group, False):
             if abs(self.rect.top - player.rect.bottom) < 15:
@@ -154,7 +154,7 @@ class Sand(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3):
+    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
         self.rect.x += step
         if pygame.sprite.spritecollide(self, player_group, False):
             if abs(self.rect.top - player.rect.bottom) < 15:
@@ -176,7 +176,7 @@ class Water(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3):
+    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
         self.rect.x += step
         if pygame.sprite.spritecollide(self, player_group, False):
             if abs(self.rect.top - player.rect.bottom) < 15:
@@ -225,13 +225,13 @@ class Player(pygame.sprite.Sprite):
                 self.timer_anime = 0
 
 
-    def update(self,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3):
+    def update(self,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3):
 
 
         key= pygame.key.get_pressed()
         self.animation(player_image, FPS)
         self.hit()
-        self.move(key,FPS,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,portal_image,enemy_image2,enemy_image3)
+        self.move(key,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3)
         self.jump(key)
 
     def jump(self,key):
@@ -246,14 +246,14 @@ class Player(pygame.sprite.Sprite):
 
             #if key[pygame.K_d] and key[pygame.K_a] != True :
                 #self.anime = False
-    def move(self,key,FPS,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,portal_image,enemy_image2,enemy_image3):
+    def move(self,key,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3):
         if key[pygame.K_d]:
             self.anime = True
             self.image = player_image[self.frame]
             self.rect.x += self.speed
             if self.rect.right > 750:
                 self.rect.right= 750
-                scroll_group.update(-self.speed,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+                scroll_group.update(-self.speed,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3)
 
 
         elif key[pygame.K_a]:
@@ -263,7 +263,31 @@ class Player(pygame.sprite.Sprite):
 
             if self.rect.left < 250:
                 self.rect.left= 250
-                scroll_group.update(self.speed,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
+                scroll_group.update(self.speed,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3)
         else:
             self.anime=False
+class Npc(pygame.sprite.Sprite):
+    def __init__(self, image, pos):
+        super().__init__()
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.frame = 0
+        self.timer_anime = 0
+        self.anime = False
+    def animation(self,FPS,npc_image):
+        if self.anime:
+            self.timer_anime += 1
+            if self.timer_anime / FPS > 0.05:
+                if self.frame == len(npc_image) - 1:
+                    self.frame = 0
+                else:
+                    self.frame += 1
+                self.timer_anime = 0
+    def update(self,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3,npc_image):
+        self.animation(FPS,npc_image)
+
+
+
 

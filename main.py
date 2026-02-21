@@ -13,6 +13,9 @@ WIDTH = 1200
 HEIGHT = 800
 FPS = 60
 
+
+
+
 HP_BAR_WIDTH = 300
 HP_BAR_HEIGHT = 30
 HP_BAR_X = 200
@@ -32,7 +35,7 @@ hp_text = pygwidgets.DisplayText(window, (200,20), 'HP: 100',
                                          fontSize = 40, textColor = (0,0,0))
 
 def restart():
-    global box_group, player, ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text
+    global box_group, player, ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text,npc_group
     stopenemy_group = pygame.sprite.Group()
     scroll_group= pygame.sprite.Group()
     box_group = pygame.sprite.Group()
@@ -43,6 +46,7 @@ def restart():
     portal_group = pygame.sprite.Group()
     coin_group = pygame.sprite.Group()
     enemy_group = pygame.sprite.Group()
+    npc_group = pygame.sprite.Group()
 
     player = Player(player_image[0], (100, 560))
     player_group.add(player)
@@ -55,14 +59,14 @@ def restart():
 
 
 def lvlGame():
-    global box_group, player,ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text
+    global box_group, player,ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text,npc_group
     stopenemy_group.draw(window)
     box_group.draw(window)
     ground_group.draw(window)
     sand_group.draw(window)
     water_group.draw(window)
     player_group.draw(window)
-
+    npc_group.draw(window)
     portal_group.draw(window)
     enemy_group.draw(window)
     coin_group.draw(window)
@@ -75,17 +79,17 @@ def lvlGame():
     shet = 0
     step = 0
 
-    ground_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
-    sand_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
-    water_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
-    portal_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
-    box_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
-    stopenemy_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
-    coin_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
-    enemy_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
-    player_group.update(player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3)
-
-
+    ground_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
+    sand_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
+    water_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
+    portal_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
+    box_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
+    stopenemy_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
+    coin_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
+    enemy_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
+    player_group.update(FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3)
+    npc_group.update(FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3,npc_image)
+    Color = 0
 
     portal_dmg = pygame.sprite.spritecollide(player,portal_group,False)
     hit_coin = pygame.sprite.spritecollide(player, coin_group, False)
@@ -128,11 +132,18 @@ def lvlGame():
                 restart()
                 drawMap('game_lvl/level2.txt')
                 return
+    if hp >=60:
+        Color = (0, 200, 0)
+    if hp > 30 and hp < 60:
+        Color = (255, 69, 0)
+    if hp <= 30:
+        Color = (139, 0, 0)
+
     pygame.draw.rect(window, (150, 150, 150), (HP_BAR_X, HP_BAR_Y, HP_BAR_WIDTH, HP_BAR_HEIGHT))
 
     current_width = (hp / 100) * HP_BAR_WIDTH
 
-    pygame.draw.rect(window, (0, 200, 0),
+    pygame.draw.rect(window, (Color),
                      (HP_BAR_X, HP_BAR_Y, current_width, HP_BAR_HEIGHT))
     pygame.draw.rect(window, (0, 0, 0),
                      (HP_BAR_X, HP_BAR_Y, HP_BAR_WIDTH, HP_BAR_HEIGHT), 2)
@@ -146,7 +157,7 @@ def lvlGame():
 
 
 def drawMap (mapFile):
-    global box_group, ground_group, sand_group, water_group, player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group
+    global box_group, ground_group, sand_group, water_group, player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,npc_group
     game_map = []
 
     with open(mapFile,'r') as file:
@@ -193,11 +204,15 @@ def drawMap (mapFile):
             elif game_map[i][j] == '9':
                 portal = Portal(portal_image[0], pos)
                 portal_group.add(portal)
-                scroll_group.add(portal)
+                #scroll_group.add(portal)
             elif game_map[i][j] == '-1':
                 coin = Coin(coin_image,pos)
                 coin_group.add(coin)
-                scroll_group.add(coin)
+                #scroll_group.add(coin)
+            elif game_map[i][j] == '-2':
+                npc = Npc(npc_image,pos)
+                npc_group.add(npc)
+                #scroll_group.add(npc)
 
 
 
