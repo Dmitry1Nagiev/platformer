@@ -225,13 +225,13 @@ class Player(pygame.sprite.Sprite):
                 self.timer_anime = 0
 
 
-    def update(self,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3):
+    def update(self,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
 
 
         key= pygame.key.get_pressed()
         self.animation(player_image, FPS)
         self.hit()
-        self.move(key,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3)
+        self.move(key,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
         self.jump(key)
 
     def jump(self,key):
@@ -246,14 +246,14 @@ class Player(pygame.sprite.Sprite):
 
             #if key[pygame.K_d] and key[pygame.K_a] != True :
                 #self.anime = False
-    def move(self,key,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3):
+    def move(self,key,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
         if key[pygame.K_d]:
             self.anime = True
             self.image = player_image[self.frame]
             self.rect.x += self.speed
             if self.rect.right > 750:
                 self.rect.right= 750
-                scroll_group.update(-self.speed,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3)
+                scroll_group.update(-self.speed,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
 
 
         elif key[pygame.K_a]:
@@ -263,7 +263,7 @@ class Player(pygame.sprite.Sprite):
 
             if self.rect.left < 250:
                 self.rect.left= 250
-                scroll_group.update(self.speed,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3)
+                scroll_group.update(self.speed,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
         else:
             self.anime=False
 class Npc(pygame.sprite.Sprite):
@@ -275,7 +275,8 @@ class Npc(pygame.sprite.Sprite):
         self.rect.y = pos[1]
         self.frame = 0
         self.timer_anime = 0
-        self.anime = False
+        self.anime = True
+
     def animation(self,FPS,npc_image):
         if self.anime:
             self.timer_anime += 1
@@ -285,8 +286,15 @@ class Npc(pygame.sprite.Sprite):
                 else:
                     self.frame += 1
                 self.timer_anime = 0
-    def update(self,FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3,npc_image):
+    def update(self,step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
+
         self.animation(FPS,npc_image)
+        self.image = npc_image[self.frame]
+        self.rect.x += step
+
+
+
+
 
 
 

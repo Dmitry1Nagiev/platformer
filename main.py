@@ -14,7 +14,8 @@ HEIGHT = 800
 FPS = 60
 
 
-
+LEVELS = {1:'game_lvl/level2.txt',
+          2:'game_lvl/level3.txt'}
 
 HP_BAR_WIDTH = 300
 HP_BAR_HEIGHT = 30
@@ -35,7 +36,7 @@ hp_text = pygwidgets.DisplayText(window, (200,20), 'HP: 100',
                                          fontSize = 40, textColor = (0,0,0))
 
 def restart():
-    global box_group, player, ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text,npc_group
+    global box_group, player, ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text,npc_group,quest_text,quest_visible,coin_text,shet
     stopenemy_group = pygame.sprite.Group()
     scroll_group= pygame.sprite.Group()
     box_group = pygame.sprite.Group()
@@ -48,18 +49,27 @@ def restart():
     enemy_group = pygame.sprite.Group()
     npc_group = pygame.sprite.Group()
 
-    player = Player(player_image[0], (100, 560))
+    player = Player(player_image[0], (200, 460))
     player_group.add(player)
     hp = 100
     #hp_text = pygwidgets.DisplayText(window, (200, 20), 'HP: 100',
                                      #fontSize=40, textColor=(0, 0, 0))
+    quest_text = DisplayText(window,(0,0), 'Collect 4 coins',
+                                                     'Comic Sans',fontSize=20,
+                                                     textColor=(0,0,0),
+                                                    backgroundColor=(255,255,200))
+    coin_text = pygwidgets.DisplayText(window, (0, 0), 'Coins: 0',
+                                       fontSize=50, textColor=(255, 255, 255))
+    quest_visible = False
+    shet = 0
+
 
 
 
 
 
 def lvlGame():
-    global box_group, player,ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text,npc_group
+    global box_group, player,ground_group,sand_group,water_group,player_group, scroll_group, portal_group, enemy_group, coin_group,stopenemy_group,hp,hp_text,npc_group,quest_text,quest_visible,coin_text,shet,gameOver,level
     stopenemy_group.draw(window)
     box_group.draw(window)
     ground_group.draw(window)
@@ -70,13 +80,10 @@ def lvlGame():
     portal_group.draw(window)
     enemy_group.draw(window)
     coin_group.draw(window)
-    coin_text = pygwidgets.DisplayText(window, (300, 300), 'Coins: 0',
-                                       fontSize=50, textColor=(255, 255, 255))
+
+    gameOver =False
 
 
-
-
-    shet = 0
     step = 0
 
     ground_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
@@ -87,19 +94,45 @@ def lvlGame():
     stopenemy_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
     coin_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
     enemy_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
-    player_group.update(FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3)
-    npc_group.update(FPS,player_image,scroll_group,player_group,player,stopenemy_group,enemy_image1,enemy_image2,enemy_image3,npc_image)
+    player_group.update(player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
+    npc_group.update(step,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
     Color = 0
 
-    portal_dmg = pygame.sprite.spritecollide(player,portal_group,False)
+    quest_visible = False
+
+    for npc in npc_group:
+        distance = abs(player.rect.centerx - npc.rect.centerx)
+
+        if distance < 100:
+            quest_visible = True
+            quest_text.setLoc((npc.rect.centerx - 80, npc.rect.top - 40))
+
+
     hit_coin = pygame.sprite.spritecollide(player, coin_group, False)
     hit_enemies = pygame.sprite.spritecollide(player,enemy_group,False)
     hit_water = pygame.sprite.spritecollide(player,water_group,False)
 
+    if pygame.sprite.spritecollide(player,portal_group,False) and shet >= 4:
+        level += 1
 
-    for portal in portal_dmg:
-        if portal_dmg:
-            drawMap('game_lvl/level3.txt')
+
+        if level in LEVELS:
+            player.rect.topleft = (320,560)
+            load_level()
+        else:
+            gameOver = True
+    if gameOver:
+        game_over_text = pygwidgets.DisplayText(window,(500,200),
+                                                'COMPLETED', 'Conic Sans',
+                                                fontSize=40,
+                                                textColor=(0,220,0))
+        game_over_text.draw()
+        player_group.empty()
+        enemy_group.empty()
+        portal_group.empty()
+
+
+
 
 
     for coin in hit_coin:
@@ -107,6 +140,7 @@ def lvlGame():
             coin.kill()
             shet += 1
             coin_text.setValue(f'Coins: {shet}')
+            print(0)
 
     for water in hit_water:
         if hit_water:
@@ -152,7 +186,26 @@ def lvlGame():
 
     for enemy in enemy_group:
         enemy.move(FPS, stopenemy_group, enemy_image1, enemy_image2, enemy_image3)
+    if quest_visible:
+        quest_text.draw()
+    coin_text.draw()
     pygame.display.update()
+
+def load_level():
+    global level
+
+    box_group.empty()
+    ground_group.empty()
+    water_group.empty()
+    sand_group.empty()
+    enemy_group.empty()
+    npc_group.empty()
+    coin_group.empty()
+    stopenemy_group.empty()
+    portal_group.empty()
+    restart()
+    drawMap(LEVELS[level])
+
 
 
 
@@ -204,23 +257,24 @@ def drawMap (mapFile):
             elif game_map[i][j] == '9':
                 portal = Portal(portal_image[0], pos)
                 portal_group.add(portal)
-                #scroll_group.add(portal)
+                scroll_group.add(portal)
             elif game_map[i][j] == '-1':
                 coin = Coin(coin_image,pos)
                 coin_group.add(coin)
-                #scroll_group.add(coin)
+                scroll_group.add(coin)
             elif game_map[i][j] == '-2':
-                npc = Npc(npc_image,pos)
+                npc = Npc(npc_image[0],pos)
                 npc_group.add(npc)
-                #scroll_group.add(npc)
+                scroll_group.add(npc)
 
 
 
 schet = 0
-
+level = 1
 
 restart()
-drawMap('game_lvl/level2.txt')
+drawMap(LEVELS[level])
+
 
 
 
@@ -233,6 +287,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
 
 
 
