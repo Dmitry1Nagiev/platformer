@@ -208,6 +208,8 @@ class Player(pygame.sprite.Sprite):
         self.invulnerable = False
         self.invuln_timer= 0
         self.invuln_duration = 60
+
+        cheat = False
     def hit(self):
         if self.invulnerable:
             self.invuln_timer += 1
@@ -247,6 +249,7 @@ class Player(pygame.sprite.Sprite):
             #if key[pygame.K_d] and key[pygame.K_a] != True :
                 #self.anime = False
     def move(self,key,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image):
+        global cheat
         if key[pygame.K_d]:
             self.anime = True
             self.image = player_image[self.frame]
@@ -266,6 +269,8 @@ class Player(pygame.sprite.Sprite):
                 scroll_group.update(self.speed,player_image,scroll_group,player_group,player,stopenemy_group,coin_group,enemy_image1,FPS,portal_image,enemy_image2,enemy_image3,npc_image)
         else:
             self.anime=False
+
+
 class Npc(pygame.sprite.Sprite):
     def __init__(self, image, pos):
         super().__init__()
@@ -291,6 +296,8 @@ class Npc(pygame.sprite.Sprite):
         self.animation(FPS,npc_image)
         self.image = npc_image[self.frame]
         self.rect.x += step
+
+
 
 
 

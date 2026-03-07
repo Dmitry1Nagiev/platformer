@@ -15,7 +15,8 @@ FPS = 60
 
 
 LEVELS = {1:'game_lvl/level2.txt',
-          2:'game_lvl/level3.txt'}
+          2:'game_lvl/level3.txt',
+          3:'game_lvl/level33.txt'}
 
 HP_BAR_WIDTH = 300
 HP_BAR_HEIGHT = 30
@@ -116,6 +117,7 @@ def lvlGame():
         level += 1
 
 
+
         if level in LEVELS:
             player.rect.topleft = (320,560)
             load_level()
@@ -126,6 +128,7 @@ def lvlGame():
                                                 'COMPLETED', 'Conic Sans',
                                                 fontSize=40,
                                                 textColor=(0,220,0))
+        victory_sound.play()
         game_over_text.draw()
         player_group.empty()
         enemy_group.empty()
@@ -140,13 +143,15 @@ def lvlGame():
             coin.kill()
             shet += 1
             coin_text.setValue(f'Coins: {shet}')
-            print(0)
+            #collect_sound.play()
+
 
     for water in hit_water:
         if hit_water:
             player.kill()
             restart()
-            drawMap('game_lvl/level2.txt')
+            drawMap(LEVELS[level])
+            fall_down_sound.play()
 
 
     for enemy in hit_enemies:
@@ -154,6 +159,7 @@ def lvlGame():
             player.rect.bottom - enemy.rect.top < 20:
             player.velocity_y -= 30
             enemy.kill()
+            fall_down_sound.play()
         else:
             if not player.invulnerable:
                 hp -= 10
@@ -164,7 +170,7 @@ def lvlGame():
             if hp <= 0:
                 player.kill()
                 restart()
-                drawMap('game_lvl/level2.txt')
+                drawMap(LEVELS[level])
                 return
     if hp >=60:
         Color = (0, 200, 0)
@@ -205,6 +211,7 @@ def load_level():
     portal_group.empty()
     restart()
     drawMap(LEVELS[level])
+    level_up_sound.play()
 
 
 
